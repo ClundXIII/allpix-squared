@@ -95,7 +95,7 @@ void CorryvreckanWriterModule::run(unsigned int) {
 
         auto detectorID = message->getDetector()->getName();
         auto objectID = detectorID + "_pixels";
-        LOG(DEBUG) << "Receieved " << message->getData().size() << " pixel hits from detector " << detectorID;
+        LOG(DEBUG) << "Received " << message->getData().size() << " pixel hits from detector " << detectorID;
         LOG(DEBUG) << "Time on event hits will be " << time_;
 
         // Loop through all pixels received

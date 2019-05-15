@@ -4,31 +4,51 @@
 #include "Object.hpp"
 
 namespace corryvreckan {
-
+    /**
+     * @ingroup Objects
+     * @brief Pixel hit object
+     */
     class Pixel : public Object {
 
     public:
         // Constructors and destructors
         Pixel() = default;
-        virtual ~Pixel() {}
-        Pixel(std::string detectorID, int row, int col, int tot) : Pixel(detectorID, row, col, tot, 0.) {}
-        Pixel(std::string detectorID, int row, int col, int tot, double timestamp)
-            : Object(detectorID, timestamp), m_row(row), m_column(col), m_adc(tot) {}
+        Pixel(std::string detectorID, int col, int row, int tot) : Pixel(detectorID, col, row, tot, 0.) {}
+        Pixel(std::string detectorID, int col, int row, int tot, double timestamp)
+            : Pixel(detectorID, col, row, tot, timestamp, false) {}
+        Pixel(std::string detectorID, int col, int row, int tot, double timestamp, bool binary)
+            : Object(detectorID, timestamp), m_row(row), m_column(col), m_adc(tot), m_charge(tot), m_isBinary(binary) {}
 
-        int row() { return m_row; }
-        int column() { return m_column; }
+        int row() const { return m_row; }
+        int column() const { return m_column; }
+        std::pair<int, int> coordinates() { return std::make_pair(m_column, m_row); }
 
-        int adc() { return m_adc; }
-        int tot() { return adc(); }
+        int adc() const { return (m_isBinary == true ? 1 : m_adc); }
+        int tot() const { return adc(); }
+
+        double charge() const { return m_charge; }
+        void setCharge(double charge) { m_charge = charge; }
+        void setToT(int tot) { m_adc = tot; }
+        void setBinary(bool binary) { m_isBinary = binary; }
+
+        /**
+         * @brief Print an ASCII representation of Pixel to the given stream
+         * @param out Stream to print to
+         */
+        void print(std::ostream& out) const override;
+
+        /**
+         * @brief ROOT class definition
+         */
+        ClassDefOverride(Pixel, 6);
 
     private:
         // Member variables
         int m_row;
         int m_column;
         int m_adc;
-
-        // ROOT I/O class definition - update version number when you change this class!
-        ClassDef(Pixel, 2)
+        double m_charge;
+        bool m_isBinary;
     };
 
     // Vector type declaration
