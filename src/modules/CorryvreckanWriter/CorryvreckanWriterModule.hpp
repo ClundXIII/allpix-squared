@@ -15,9 +15,9 @@
 #include "core/module/Module.hpp"
 
 // Local includes
-#include "corryvreckan/MCParticle.h"
+#include "corryvreckan/MCParticle.hpp"
 #include "corryvreckan/Object.hpp"
-#include "corryvreckan/Pixel.h"
+#include "corryvreckan/Pixel.hpp"
 #include "objects/PixelHit.hpp"
 
 // ROOT includes

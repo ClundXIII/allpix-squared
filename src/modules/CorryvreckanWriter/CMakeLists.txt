@@ -22,8 +22,8 @@ ENDIF()
 # Generate the ROOT dictionary
 ROOT_GENERATE_DICTIONARY(CorryvreckanObjectsDictionary
     ${CMAKE_CURRENT_SOURCE_DIR}/corryvreckan/Object.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/corryvreckan/Pixel.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/corryvreckan/MCParticle.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/corryvreckan/Pixel.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/corryvreckan/MCParticle.hpp
     LINKDEF
     ${CMAKE_CURRENT_SOURCE_DIR}/corryvreckan/Linkdef.h
     OPTIONS
