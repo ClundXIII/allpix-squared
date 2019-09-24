@@ -13,12 +13,16 @@
 #include <limits>
 #include <memory>
 #include <regex>
+#include <sstream>
+#include <string>
 
 #include <G4Event.hh>
+#include <G4Gamma.hh>
 #include <G4IonTable.hh>
 #include <G4ParticleDefinition.hh>
 #include <G4ParticleTable.hh>
 #include <G4RunManager.hh>
+#include <G4SystemOfUnits.hh>
 #include <G4UImanager.hh>
 #include <core/module/exceptions.h>
 
@@ -28,8 +32,59 @@
 
 using namespace allpix;
 
+std::string allpix::input_energy_file = "";
+
+G4int n_particle = 1;
+
 GeneratorActionG4::GeneratorActionG4(const Configuration& config)
-    : particle_source_(std::make_unique<G4GeneralParticleSource>()) {
+    : fParticleGun(std::make_unique<G4ParticleGun>(n_particle)),
+      particle_source_(std::make_unique<G4GeneralParticleSource>()) {
+
+    if(input_energy_file != "") {
+
+        std::cout << "loading stuff from \"" << input_energy_file << "\"" << std::endl;
+
+        std::string base_dir = "../";
+
+        std::ifstream energyInput(base_dir + input_energy_file);
+
+        G4ParticleDefinition* particle = G4Gamma::GammaDefinition();
+
+        fParticleGun->SetParticleDefinition(particle);
+        fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
+        fParticleGun->SetParticlePosition(config.get<G4ThreeVector>("source_position"));
+
+        std::string line;
+
+        if(!energyInput.is_open()) {
+            std::cout << "cannot open infile!" << std::endl;
+        }
+
+        while(std::getline(energyInput, line)) {
+            std::vector<double> thisLine;
+
+            std::istringstream iss(line);
+
+            double energy = 0;
+            double momX = 0, momY = 0, momZ = 0;
+
+            iss >> energy;
+            iss >> momX;
+            iss >> momY;
+            iss >> momZ;
+
+            thisLine.push_back(energy);
+            thisLine.push_back(momX);
+            thisLine.push_back(momY);
+            thisLine.push_back(momZ);
+
+            particleData.push_back(thisLine);
+        }
+
+        energyInput.close();
+        std::cout << "done" << std::endl;
+        return;
+    }
 
     // Define radioactive isotopes:
     static std::map<std::string, std::tuple<int, int, int, double>> isotopes = {
@@ -228,5 +283,20 @@ GeneratorActionG4::GeneratorActionG4(const Configuration& config)
  * Called automatically for every event
  */
 void GeneratorActionG4::GeneratePrimaries(G4Event* event) {
-    particle_source_->GeneratePrimaryVertex(event);
+
+    if(particleData.size() > 0) {
+
+        fParticleGun->SetParticleEnergy(particleData[particleDataPos][0] * keV);
+        fParticleGun->SetParticleMomentumDirection(G4ThreeVector(
+            particleData[particleDataPos][1], particleData[particleDataPos][2], particleData[particleDataPos][3]));
+        fParticleGun->GeneratePrimaryVertex(event);
+
+        particleDataPos++;
+        if(particleData.size() <= particleDataPos) {
+            particleDataPos = 0;
+            std::cout << "Input Data wrap around!" << std::endl;
+        }
+    } else {
+        particle_source_->GeneratePrimaryVertex(event);
+    }
 }

@@ -23,6 +23,10 @@ INSTALL(
     FILES
     test.conf
     timepix.conf
+    timepix500.conf
+    timepix500_cap_absorber.conf
+    timepix500_cap_vac_window.conf
+    timepix500_dia_vac_window.conf
     medipix3.conf
     mimosa23.conf
     mimosa26.conf

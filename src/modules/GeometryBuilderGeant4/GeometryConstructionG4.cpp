@@ -179,6 +179,10 @@ void GeometryConstructionG4::init_materials() {
     Solder->AddElement(Sn, 0.63);
     Solder->AddElement(Pb, 0.37);
     materials_["solder"] = Solder;
+
+    // Create diamond
+    G4Material* diamond = new G4Material("diamond", 6, 12.01 * CLHEP::g / CLHEP::mole, 3.515 * CLHEP::g / CLHEP::cm3);
+    materials_["diamond"] = diamond;
 }
 
 void GeometryConstructionG4::build_detectors() {

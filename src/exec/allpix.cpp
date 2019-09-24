@@ -23,6 +23,10 @@
 
 #include "core/utils/log.h"
 
+namespace allpix {
+    extern std::string input_energy_file;
+}
+
 using namespace allpix;
 
 void clean();
@@ -96,6 +100,7 @@ int main(int argc, const char* argv[]) {
     std::string log_file_name;
     std::vector<std::string> module_options;
     std::vector<std::string> detector_options;
+
     for(int i = 1; i < argc; i++) {
         if(strcmp(argv[i], "-h") == 0) {
             print_help = true;
@@ -125,6 +130,8 @@ int main(int argc, const char* argv[]) {
             module_options.emplace_back(std::string(argv[++i]));
         } else if(strcmp(argv[i], "-g") == 0 && (i + 1 < argc)) {
             detector_options.emplace_back(std::string(argv[++i]));
+        } else if(strcmp(argv[i], "--input-energy-file") == 0 && (i + 1 < argc)) {
+            allpix::input_energy_file = std::string(argv[++i]);
         } else {
             LOG(ERROR) << "Unrecognized command line argument \"" << argv[i] << "\"";
             print_help = true;

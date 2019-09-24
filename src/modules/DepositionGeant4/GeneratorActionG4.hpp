@@ -14,6 +14,7 @@
 
 #include <G4GeneralParticleSource.hh>
 #include <G4ParticleDefinition.hh>
+#include <G4ParticleGun.hh>
 #include <G4SDManager.hh>
 #include <G4ThreeVector.hh>
 #include <G4TwoVector.hh>
@@ -21,7 +22,11 @@
 
 #include "core/config/Configuration.hpp"
 
+#include <fstream>
+
 namespace allpix {
+    extern std::string input_energy_file;
+
     /**
      * @brief Generates the particles in every event
      */
@@ -39,7 +44,11 @@ namespace allpix {
         void GeneratePrimaries(G4Event*) override;
 
     private:
+        std::unique_ptr<G4ParticleGun> fParticleGun;
         std::unique_ptr<G4GeneralParticleSource> particle_source_;
+
+        std::vector<std::vector<double>> particleData;
+        unsigned int particleDataPos = 0;
     };
 } // namespace allpix
 

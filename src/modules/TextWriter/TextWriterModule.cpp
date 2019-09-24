@@ -110,16 +110,16 @@ void TextWriterModule::receive(std::shared_ptr<BaseMessage> message, std::string
 
 void TextWriterModule::run(unsigned int event_num) {
     LOG(TRACE) << "Writing new objects to text file";
-
+    event_num++;
     // Print the current event:
-    *output_file_ << "=== " << event_num << " ===" << std::endl;
+    //*output_file_ << "=== " << event_num << " ===" << std::endl;
 
     for(auto& message : keep_messages_) {
         // Print the current detector:
         if(message->getDetector() != nullptr) {
-            *output_file_ << "--- " << message->getDetector()->getName() << " ---" << std::endl;
+            //*output_file_ << "--- " << message->getDetector()->getName() << " ---" << std::endl;
         } else {
-            *output_file_ << "--- <global> ---" << std::endl;
+            //*output_file_ << "--- <global> ---" << std::endl;
         }
         for(auto& object : message->getObjectArray()) {
             // Print the object's ASCII representation:
